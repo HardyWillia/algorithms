@@ -19,6 +19,9 @@ Part 1 (rsa435.cc)
     - The combination (e, n) and (d, n) are what makes up the private/public key, respectively.
 
 
-Part 2 (sign.cpp)
--
--
+Part 2 (digisign.cpp)
+- File to implement the digital signature and verify it
+- The sha256 functions are from this URL
+    - http://www.zedwood.com/article/cpp-sha256-function
+- The main function will hash the file each time whether signing or verifying is being done.
+- 

@@ -2,7 +2,7 @@
 
 /*
    Willia Hardy
-   Algorithms Project Part 1
+   Algorithms Project 1 Part 1
    Student ID: 2905326
 */
 
@@ -95,11 +95,11 @@ int main(){
 
       //Get first prime and store it into p
       BigUnsigned p = getLargePrime();
-      std::cout << p << std::endl;
+      std::cout << "p: " << p << std::endl;
       
       //Get second prime and store it into q
       BigUnsigned q = getLargePrime();
-      std::cout << q << std::endl;
+      std::cout << "q: " << q << std::endl;
 
       //Save p and q in a file named p_q.txt, one integer per line and making sure no white space is saved
       std::cout << "Outputting to file..." << std::endl;
