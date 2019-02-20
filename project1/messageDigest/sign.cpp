@@ -68,14 +68,13 @@ int main(int argc, char *argv[])
           // Generate a SHA-256 hash of the contents of the file to be signed
        BigUnsigned hash = hashMemblock(memblock);
        std::cout << "Hashed contents from file.txt: " << hash << std::endl;
-      //std::cout<<memblock;
         
-      if (argv[1][0]=='s') {
+      if (argv[1][0] == 's') {
          std::cout << "\n"<<"Need to sign the doc.\n";
          std::cout << "Signing the document " << filename << "..." << std::endl;
 
          // Load in d_n.txt since it is not in the current directory
-         std::ifstream d_nfile("d_n.txt");
+         std::ifstream d_nfile("../bigInt435/d_n.txt");
          std::string dString, nString;
          while (d_nfile >> dString >> nString) { }
          d_nfile.close();
@@ -117,7 +116,7 @@ int main(int argc, char *argv[])
                   << std::endl;
 
          //Read contents of e_n.txt since it is not in the current directory
-         std::ifstream e_nfile("e_n.txt");
+         std::ifstream e_nfile("../bigInt435/e_n.txt");
          std::string eString, nString;
          while (e_nfile >> eString >> nString) {
          }
