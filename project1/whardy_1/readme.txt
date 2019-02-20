@@ -24,4 +24,9 @@ Part 2 (digisign.cpp)
 - The sha256 functions are from this URL
     - http://www.zedwood.com/article/cpp-sha256-function
 - The main function will hash the file each time whether signing or verifying is being done.
-- 
+- The file directory had to be specified or the e_n.txt and d_n.txt files couldnt be found 
+- Named messageDigest.cpp to "sign.cpp" in the Makefile to help with running with the following commands:
+    - sign.exe s file.txt
+    - sign.exe v file.txt.signed signature_file
+- I verified the program works correctly and it does.
+

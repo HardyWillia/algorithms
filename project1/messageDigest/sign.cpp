@@ -74,7 +74,8 @@ int main(int argc, char *argv[])
          std::cout << "Signing the document " << filename << "..." << std::endl;
 
          // Load in d_n.txt since it is not in the current directory
-         std::ifstream d_nfile("../bigInt435/d_n.txt");
+         // std::ifstream d_nfile("../bigInt435/d_n.txt"); **Needed this to test the program on my computer
+         std::ifstream d_nfile("d_n.txt");
          std::string dString, nString;
          while (d_nfile >> dString >> nString) { }
          d_nfile.close();
@@ -116,7 +117,8 @@ int main(int argc, char *argv[])
                   << std::endl;
 
          //Read contents of e_n.txt since it is not in the current directory
-         std::ifstream e_nfile("../bigInt435/e_n.txt");
+         // std::ifstream e_nfile("../bigInt435/e_n.txt"); **Needed this to test the program on my computer 
+         std::ifstream e_nfile("e_n.txt"); 
          std::string eString, nString;
          while (e_nfile >> eString >> nString) {
          }
