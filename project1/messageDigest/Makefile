@@ -51,8 +51,11 @@ testsuite-cleanfiles = \
 # your own Makefile.
 
 # Components of the program.
-program = messageDigest435
-program-objects = messageDigest435.o
+# program = messageDigest435
+# program-objects = messageDigest435.o
+
+program = sign
+program-objects = sign.o
 
 # Conservatively assume all the program source files depend on all the library
 # headers.  You can change this if it is not the case.
