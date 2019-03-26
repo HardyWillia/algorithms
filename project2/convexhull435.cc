@@ -288,34 +288,6 @@ void quickHull(std::vector<iPair> points, int n, std::string outputFile)
     hullHelper(points, n, points[min_x], points[max_x], 1);
     hullHelper(points, n, points[min_x], points[max_x], -1);
 
-    // Put points in order to draw the convex correctly
-    std::set<iPair>::iterator it;
-    for (it = quick_hull.begin(); it != quick_hull.end(); ++it)
-    {
-        iPair point = *it;
-        Point myPoint;
-        myPoint.x = point.first;
-        myPoint.y = point.second;
-        quick_hull_vector.push_back(myPoint);
-    }
-
-    int ymin = quick_hull_vector[0].y, min = 0;
-
-    // Go through all points and find one with smallest y-value
-    for (int i = 1; i < quick_hull_vector.size(); i++)
-    {
-        int y = quick_hull_vector[i].y;
-
-        if ((y < ymin) || (ymin == y && quick_hull_vector[i].x < quick_hull_vector[min].x))
-            ymin = quick_hull_vector[i].y, min = i;
-    }
-
-    // Set p0 to the lowest point we just found, then sort the rest of them
-    swap(quick_hull_vector[0], quick_hull_vector[min]);
-    p0 = quick_hull_vector[0];
-
-    // Sort newly converted vector of points, just like beginning of Graham Scan
-    qsort(&quick_hull_vector[1], quick_hull_vector.size() - 1, sizeof(Point), compare);
 
     // Export hull to file
     std::ofstream file;
