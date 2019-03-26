@@ -305,24 +305,49 @@ int main(int argc, char *argv[])
    else {
       std::string algType = argv[1];
       std::string dataFilename = argv[2];
-      std::string outputFile = "";
+      //std::string outputFile = "";
       //read your data points from dataFile (see class example for the format)
-      
+
+      std::ifstream file;
+      file.open(dataFilename.c_str());
+      std::vector<Point> points;
+      std::vector<iPair> quick_points;
+
+      // Read datapoints from dataFile
+      if (file.is_open())
+      {
+          int x, y;
+          while (file >> x >> y)
+          {
+              Point myPoint;
+              myPoint.x = x;
+              myPoint.y = y;
+              points.push_back(myPoint);
+              quick_points.push_back(*new iPair(x, y));
+          }
+      }
+
       if (algType[0]=='G') {
          //call your Graham Scan algorithm to solve the problem
-         outputFile = "hull_G.txt";
+         std::clock_t start = std::clock();
+         grahamScan(points, points.size(), "hull_G.txt");
+         double duration = (std::clock() - start);
+         std::cout << "Graham scan on " << dataFilename << " took " << duration << " ms" << std::endl;
       } 
       else if (algType[0]=='J') {
          //call your Javis March algorithm to solve the problem
-         outputFile = "hull_J.txt";
+         std::clock_t start = std::clock();
+         jarvisMarch(points, points.size(), "hull_J.txt");
+         double duration = (std::clock() - start);
+         std::cout << "Jarvis's March on " << dataFilename << " took " << duration << " ms" << std::endl;
       }
       else { //default 
          //call your Quickhull algorithm to solve the problem
-         outputFile = "hull_Q.txt";
+         std::clock_t start = std::clock();
+         quickHull(quick_points, points.size(), "hull_Q.txt");
+         double duration = (std::clock() - start);
+         std::cout << "Quickhull on " << dataFilename << " took " << duration << " ms" << std::endl;
       }
-      
-      //write your convex hull to the outputFile (see class example for the format)
-      //you should be able to visulize your convex hull using the "ConvexHull_GUI" program.
-	
+   }
 	return 0;
 }
