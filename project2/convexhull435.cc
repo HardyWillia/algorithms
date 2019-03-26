@@ -20,8 +20,6 @@
 #include <set>
 #include <stack>
 
-using namespace std;
-
 
 struct Point{
     int x, y;
@@ -32,26 +30,26 @@ int count = 0;
 Point p0;
 
 //Specifics for Quick Hull
-#define iPair pair<int, int>
-set<iPair> quick_hull;
-vector<Point> quick_hull_vector;
+#define iPair std::pair<int, int>
+std::set<iPair> quick_hull;
+std::vector<Point> quick_hull_vector;
 
 //Used for Jarvis March and QuickHull
-vector<Point> jarvis_quick;
+std::vector<Point> jarvis_quick;
 
 /*
     Funtions below would be more cohesive in a header file, but it is included in the main file for now.
 */
 
-//Swap two points
+//Swap two points, from Graham Scan adaptation
 int swap(Point &p1, Point &p2){
     Point temp = p1;
     p1 = p2;
     p2 = temp;
 }
 
-//Returns the point under the top point in the stack 
-Point nextToTop(stack<Point> &S){
+//Returns the point under the top point in the stack, from Graham Scan adaptation
+Point nextToTop(std::stack<Point> &S){
     Point p = S.top();
     S.pop();
     Point res = S.top();
@@ -59,20 +57,22 @@ Point nextToTop(stack<Point> &S){
     return res;
 }
 
-//Returns distance between two points
+//Returns the square of distance between two points, from Graham Scan adaptation
 int dist(Point p1, Point p2){
     return (p1.x - p2.x) * (p1.x-p2.x) + (p1.y - p2.y) * (p1.y- p2.y);
 }
 
-//Returns the orientation of the points
+//Returns the orientation of the points, from Graham Scan adaptation
+// 0 --> p, q and r are colinear
+// 1 --> Clockwise, right turn
+// 2 --> Counterclockwise, left turn
 int orientation(Point p, Point q, Point r){
     int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    if (val == 0)
-        return 0;
-    return (val > 0) ? 1 : 2;
+    if (val == 0) return 0; //colinear
+    return (val > 0) ? 1 : 2; //right or left turn
 }
 
-// Helps sort with respect to first point
+// Helps sort an array of points with respect to first point,from Graham Scan adaptation
 int compare(const void *vp1, const void *vp2)
 {
     Point *p1 = (Point *)vp1;
@@ -84,7 +84,7 @@ int compare(const void *vp1, const void *vp2)
     return (o == 2) ? -1 : 1;
 }
 
-// Returns side of a point that joins p1 and p2
+// Returns side of a point that joins p1 and p2, from Quick Hull adaptation
 int findSide(iPair p1, iPair p2, iPair p)
 {
     int val = (p.second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (p.first - p1.first);
@@ -96,7 +96,7 @@ int findSide(iPair p1, iPair p2, iPair p)
 }
 
 // Return value proportional to distance between p and the line
-// connecting p1 and p2
+// connecting p1 and p2, from Quick Hull adaptation
 int lineDist(iPair p1, iPair p2, iPair p)
 {
     return abs((p.second - p1.second) * (p2.first - p1.first) - (p2.second - p1.second) * (p.first - p1.first));
@@ -120,25 +120,39 @@ void grahamScan(std::vector<Point> points, int n, std::string outputFile)
             ymin = points[i].y, min = i;
     }
 
-    // Set p0 to the lowest point we just found, then sort the rest of them
+    // Place the bottom-most point at first position
     swap(points[0], points[min]);
-    p0 = points[0];
 
+    // Sort n-1 points with respect to the first point.
+    // A point p1 comes before p2 in sorted ouput if p2
+    // has larger polar angle (in counterclockwise
+    // direction) than p1
+    p0 = points[0];
     qsort(&points[1], n - 1, sizeof(Point), compare);
 
-    int m = 1;
+    // If two or more points make same angle with p0,
+    // Remove all but the one that is farthest from p0
+    // Remember that, in above sorting, our criteria was
+    // to keep the farthest point at the end when more than
+    // one points have same angle.
+    int m = 1; //Initialize size of modified array
     for (int i = 1; i < n; i++)
     {
+        // Keep removing i while angle of i and i+1 is same
+        // with respect to p0
         while (i < n - 1 && orientation(p0, points[i], points[i + 1]) == 0)
             i++;
         points[m] = points[i];
-        m++;
+        m++; //Update size of modified array
     }
 
+    // If modified array of points has less than 3 points,
+    // convex hull is not possible
     if (m < 3)
         return;
 
-    // Push initial 3 points,
+    // Create an empty stack and push first three points
+    // to it.
     std::stack<Point> S;
     S.push(points[0]);
     S.push(points[1]);
@@ -152,7 +166,7 @@ void grahamScan(std::vector<Point> points, int n, std::string outputFile)
         S.push(points[i]);
     }
 
-    // Export hull to file
+    // Export Graham Scan Convex Hull to a file
     std::ofstream file;
     file.open(outputFile.c_str(), std::ofstream::out | std::ofstream::trunc);
     while (!S.empty())
@@ -167,29 +181,39 @@ void grahamScan(std::vector<Point> points, int n, std::string outputFile)
 //Jarvis March adapted from: https://www.geeksforgeeks.org/convex-hull-set-1-jarviss-algorithm-or-wrapping/
 void jarvisMarch(std::vector<Point> points, int n, std::string outputFile)
 {
-    if (n < 3)
-    {
-        std::cout << "Must be more than 3 points" << std::endl;
-        return;
-    }
+    //There must be at least 3 points
+    if (n < 3) return;
 
-    // Find leftmost points
+    // Find the leftmost point
     int left = 0;
     for (int i = 1; i < n; i++)
         if (points[i].x < points[left].x)
             left = i;
 
-    // Find all points on hull by finding the smallest angle point
+    // Start from leftmost point, keep moving counterclockwise
+    // until reach the start point again.  This loop runs O(h)
+    // times where h is number of points in result or output.
     int p = left, q;
     do
     {
+        //Add current point to result
         jarvis_quick.push_back(points[p]);
-        q = (p + 1) % n;
 
-        for (int i = 0; i < n; i++)
+        // Search for a point 'q' such that orientation(p, x,
+        // q) is counterclockwise for all points 'x'. The idea
+        // is to keep track of last visited most counterclock-
+        // wise point in q. If any point 'i' is more counterclock-
+        // wise than q, then update q.
+        q = (p + 1) % n;
+        for (int i = 0; i < n; i++){
+            // If i is more counterclockwise than current q, then
+            // update q
             if (orientation(points[p], points[i], points[q]) == 2)
                 q = i;
-
+        }
+        // Now q is the most counterclockwise with respect to p
+        // Set p as q for next iteration, so that q is added to
+        // result 'hull'
         p = q;
 
     } while (p != left);
@@ -208,56 +232,63 @@ void jarvisMarch(std::vector<Point> points, int n, std::string outputFile)
 // Recursive helper for Quickhull function
 void hullHelper(std::vector<iPair> points, int n, iPair p1, iPair p2, int side)
 {
-    int index = -1;
+    int ind = -1;
     int max_dist = 0;
 
+    // finding the point with maximum distance
+    // from L and also on the specified side of L.
     for (int i = 0; i < n; i++)
     {
         int temp = lineDist(p1, p2, points[i]);
         if (findSide(p1, p2, points[i]) == side && temp > max_dist)
         {
-            index = i;
+            ind = i;
             max_dist = temp;
         }
     }
 
-    if (index == -1)
+    // If no point is found, add the end points
+    // of L to the convex hull.
+    if (ind == -1)
     {
         quick_hull.insert(p1);
         quick_hull.insert(p2);
         return;
     }
 
-    // recurse twice with smaller sets of points
-    hullHelper(points, n, points[index], p1, -findSide(points[index], p1, p2));
-    hullHelper(points, n, points[index], p2, -findSide(points[index], p2, p1));
+    // Recurse twice with smaller sets of points
+    // Recurse for the two parts divided by a[ind]
+    hullHelper(points, n, points[ind], p1, -findSide(points[ind], p1, p2));
+    hullHelper(points, n, points[ind], p2, -findSide(points[ind], p2, p1));
 }
 
 // Find a convex hull using Quickhull
 void quickHull(std::vector<iPair> points, int n, std::string outputFile)
 {
+    // a[i].second -> y-coordinate of the ith point
     if (n < 3)
     {
-        std::cout << "Must be more than 3 points" << std::endl;
+        std::cout << "Quick Hull is not possible" << std::endl;
         return;
     }
 
-    // Find the largest and smallest X values
-    int minX = 0, maxX = 0;
+    // Find the minimum and maximum x-coordinate values
+    int min_x = 0, max_x = 0;
     for (int i = 1; i < n; i++)
     {
-        if (points[i].first < points[minX].first)
-            minX = i;
-        if (points[i].first > points[maxX].first)
-            maxX = i;
+        if (points[i].first < points[min_x].first)
+            min_x = i;
+        if (points[i].first > points[max_x].first)
+            max_x = i;
     }
 
-    // Fun recursive function on each side of the dataset
-    hullHelper(points, n, points[minX], points[maxX], 1);
-    hullHelper(points, n, points[minX], points[maxX], -1);
+    // Recursively find convex hull points on
+    // one side and other side of line joining a[min_x] and
+    // a[max_x]
+    hullHelper(points, n, points[min_x], points[max_x], 1);
+    hullHelper(points, n, points[min_x], points[max_x], -1);
 
-    // Hull is done, now put in order to draw it right
-    // **This is a time consuming process, and can skew results on hulls with many points**
+    // Put points in order to draw the convex correctly
     std::set<iPair>::iterator it;
     for (it = quick_hull.begin(); it != quick_hull.end(); ++it)
     {
@@ -270,7 +301,7 @@ void quickHull(std::vector<iPair> points, int n, std::string outputFile)
 
     int ymin = quick_hull_vector[0].y, min = 0;
 
-    // Go through all points and find one with least y value
+    // Go through all points and find one with smallest y-value
     for (int i = 1; i < quick_hull_vector.size(); i++)
     {
         int y = quick_hull_vector[i].y;
@@ -283,7 +314,7 @@ void quickHull(std::vector<iPair> points, int n, std::string outputFile)
     swap(quick_hull_vector[0], quick_hull_vector[min]);
     p0 = quick_hull_vector[0];
 
-    // Sort newly converted vector of points, just like beginning of graham scan
+    // Sort newly converted vector of points, just like beginning of Graham Scan
     qsort(&quick_hull_vector[1], quick_hull_vector.size() - 1, sizeof(Point), compare);
 
     // Export hull to file
