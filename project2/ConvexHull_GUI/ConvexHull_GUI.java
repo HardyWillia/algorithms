@@ -272,6 +272,8 @@ public class ConvexHull_GUI extends JPanel
          //visulizing the points and convex hull      
          String dataFile = "test.txt";
          String hullFile = "hull.txt";
+
+         //The number attached to the files below were changed based on the number (n) of data points
          String circleFile = "circle10.txt";
          String oncircleFile = "onCircle10.txt";
          String rectangleFile = "rectangle10.txt";
