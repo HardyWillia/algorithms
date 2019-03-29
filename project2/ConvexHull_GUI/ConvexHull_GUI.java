@@ -262,9 +262,9 @@ public class ConvexHull_GUI extends JPanel
    
    public static void main(String[] args) {
       ConvexHull_GUI CH = new ConvexHull_GUI();
-      boolean generateData = false;
+      boolean generateData = false; //set to true to generate the file of random data
       if (generateData){
-         CH.testFileGen("test.txt", "triangle", 1000); //generate data points
+         CH.testFileGen("triangle1000000.txt", "triangle", 1000000); //generate data points
          System.out.println("done");
          System.exit(0);
       }
@@ -272,11 +272,23 @@ public class ConvexHull_GUI extends JPanel
          //visulizing the points and convex hull      
          String dataFile = "test.txt";
          String hullFile = "hull.txt";
+         String circleFile = "circle10.txt";
+         String oncircleFile = "onCircle10.txt";
+         String rectangleFile = "rectangle10.txt";
+         String triangleFile = "triangle10.txt";
       
          CH.readDataFile(dataFile, 'd');
          System.out.println(dataFile + " has "+CH.getData().size()+" points.");
          CH.readDataFile(hullFile, 'h');
          System.out.println(hullFile + " has "+CH.getHull().size()+" points.");
+         CH.readDataFile(circleFile, 'c');
+         System.out.println(circleFile + " has "+CH.getData().size()+" points.");
+         CH.readDataFile(oncircleFile, 'o');
+         System.out.println(oncircleFile + " has "+CH.getHull().size()+" points.");
+         CH.readDataFile(rectangleFile, 'r');
+         System.out.println(rectangleFile + " has "+CH.getData().size()+" points.");
+         CH.readDataFile(triangleFile, 't');
+         System.out.println(triangleFile + " has "+CH.getHull().size()+" points.");
       
          JFrame jf = new JFrame("Convex Hull");
          jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
