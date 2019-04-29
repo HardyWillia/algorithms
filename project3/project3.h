@@ -14,11 +14,11 @@
 #include <bits/stdc++.h>
 
 // Custom object to hold RGB values of .ppm files
-struct Pixel
-{
-    std::vector<std::vector<int>> matrix;
-    int R, G, B;
-};
+// struct Pixel
+// {
+//     std::vector<std::vector<int>> matrix;
+//     int R, G, B;
+// };
 
 
 // Size the matrix correctly based on input image width and height
@@ -31,14 +31,14 @@ void populateVector(std::vector<std::vector<int>> &matrix, int width, int height
     }
 }
 
-void populateVector(std::vector<std::vector<Pixel>> &matrix, int width, int height)
-{
-    matrix.resize(height);
-    for (int i = 0; i < height; i++)
-    {
-        matrix[i].resize(width);
-    }
-}
+// void populateVector(std::vector<std::vector<Pixel>> &matrix, int width, int height)
+// {
+//     matrix.resize(height);
+//     for (int i = 0; i < height; i++)
+//     {
+//         matrix[i].resize(width);
+//     }
+// }
 // Transpose the matrix
 std::vector<std::vector<int>> transpose(std::vector<std::vector<int>> &matrix)
 {
@@ -53,34 +53,50 @@ std::vector<std::vector<int>> transpose(std::vector<std::vector<int>> &matrix)
     return transposedMatrix;
 }
 // Overload to handle Pixel matrices
-std::vector<std::vector<Pixel>> transpose(std::vector<std::vector<Pixel>> &matrix)
-{
-    int width = matrix[0].size();
-    int height = matrix.size();
-    std::vector<std::vector<Pixel>> transposedMatrix;
-    populateVector(transposedMatrix, height, width);
-    for (int i = 0; i < height; i++)
-        for (int j = 0; j < width; j++)
-            transposedMatrix[j][i] = matrix[i][j];
-    return transposedMatrix;
-}
+// std::vector<std::vector<Pixel>> transpose(std::vector<std::vector<Pixel>> &matrix)
+// {
+//     int width = matrix[0].size();
+//     int height = matrix.size();
+//     std::vector<std::vector<Pixel>> transposedMatrix;
+//     populateVector(transposedMatrix, height, width);
+//     for (int i = 0; i < height; i++)
+//         for (int j = 0; j < width; j++)
+//             transposedMatrix[j][i] = matrix[i][j];
+//     return transposedMatrix;
+// }
 
 // Print the matrix out for quick debugging
 // Careful when using with large inputs
-void printMatrix(std::vector<std::vector<Pixel>> &matrix)
+void printMatrix(std::vector<std::vector<int>> &matrix, std::string name)
 {
     int height = matrix.size();
     int width = matrix[0].size();
+    std::cout << name << std::endl;
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-            std::cout << "(" << matrix[i][j].R << ", " << matrix[i][j].G << ", " << matrix[i][j].B << ") ";
+            std::cout << matrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
     std::cout << std::endl;
 }
+
+// void printMatrix(std::vector<std::vector<Pixel>> &matrix)
+// {
+//     int height = matrix.size();
+//     int width = matrix[0].size();
+//     for (int i = 0; i < height; i++)
+//     {
+//         for (int j = 0; j < width; j++)
+//         {
+//             std::cout << "(" << matrix[i][j].R << ", " << matrix[i][j].G << ", " << matrix[i][j].B << ") ";
+//         }
+//         std::cout << std::endl;
+//     }
+//     std::cout << std::endl;
+// }
 
 
 // Returns the value of the cell with the least value of the 3 above the given i, j
@@ -171,51 +187,51 @@ std::vector<std::vector<int>> calculateEnergyMatrix(std::vector<std::vector<int>
 }
 
 // Calculate the energy matrix for Pixel matrix
-std::vector<std::vector<int>> calculateEnergyMatrix(std::vector<std::vector<Pixel>> &matrix)
-{
-    int height = matrix.size();
-    int width = matrix[0].size();
-    std::vector<std::vector<int>> energyMatrix;
-    populateVector(energyMatrix, width, height);
-    int left, right, top, bottom;
-    for (int i = 0; i < height; i++)
-    {
-        for (int j = 0; j < width; j++)
-        {
-            if (j == 0)
-                left = 0;
-            else
-                left = abs(matrix[i][j].R - matrix[i][j - 1].R) +
-                       abs(matrix[i][j].G - matrix[i][j - 1].G) +
-                       abs(matrix[i][j].B - matrix[i][j - 1].B);
+// std::vector<std::vector<int>> calculateEnergyMatrix(std::vector<std::vector<Pixel>> &matrix)
+// {
+//     int height = matrix.size();
+//     int width = matrix[0].size();
+//     std::vector<std::vector<int>> energyMatrix;
+//     populateVector(energyMatrix, width, height);
+//     int left, right, top, bottom;
+//     for (int i = 0; i < height; i++)
+//     {
+//         for (int j = 0; j < width; j++)
+//         {
+//             if (j == 0)
+//                 left = 0;
+//             else
+//                 left = abs(matrix[i][j].R - matrix[i][j - 1].R) +
+//                        abs(matrix[i][j].G - matrix[i][j - 1].G) +
+//                        abs(matrix[i][j].B - matrix[i][j - 1].B);
 
-            if (j == width - 1)
-                right = 0;
-            else
-                right = abs(matrix[i][j].R - matrix[i][j + 1].R) +
-                        abs(matrix[i][j].G - matrix[i][j + 1].G) +
-                        abs(matrix[i][j].B - matrix[i][j + 1].B);
+//             if (j == width - 1)
+//                 right = 0;
+//             else
+//                 right = abs(matrix[i][j].R - matrix[i][j + 1].R) +
+//                         abs(matrix[i][j].G - matrix[i][j + 1].G) +
+//                         abs(matrix[i][j].B - matrix[i][j + 1].B);
 
-            if (i == 0)
-                top = 0;
-            else
-                top = abs(matrix[i][j].R - matrix[i - 1][j].R) +
-                      abs(matrix[i][j].G - matrix[i - 1][j].G) +
-                      abs(matrix[i][j].B - matrix[i - 1][j].B);
+//             if (i == 0)
+//                 top = 0;
+//             else
+//                 top = abs(matrix[i][j].R - matrix[i - 1][j].R) +
+//                       abs(matrix[i][j].G - matrix[i - 1][j].G) +
+//                       abs(matrix[i][j].B - matrix[i - 1][j].B);
 
-            if (i == height - 1)
-                bottom = 0;
-            else
-                bottom = abs(matrix[i][j].R - matrix[i + 1][j].R) +
-                         abs(matrix[i][j].G - matrix[i + 1][j].G) +
-                         abs(matrix[i][j].B - matrix[i + 1][j].B);
+//             if (i == height - 1)
+//                 bottom = 0;
+//             else
+//                 bottom = abs(matrix[i][j].R - matrix[i + 1][j].R) +
+//                          abs(matrix[i][j].G - matrix[i + 1][j].G) +
+//                          abs(matrix[i][j].B - matrix[i + 1][j].B);
 
-            energyMatrix[i][j] = left + right + top + bottom;
-        }
-    }
+//             energyMatrix[i][j] = left + right + top + bottom;
+//         }
+//     }
 
-    return energyMatrix;
-}
+//     return energyMatrix;
+// }
 
 // Calculate cumulative matrix
 std::vector<std::vector<int>> calculateCumulativeMatrix(std::vector<std::vector<int>> &energyMatrix)
@@ -263,11 +279,11 @@ void removeMinPath(std::vector<std::vector<int>> &matrix, std::vector<std::pair<
     for (int i = 0; i < minPath.size(); i++)
         matrix[minPath[i].first].erase(matrix[minPath[i].first].begin() + minPath[i].second);
 }
-void removeMinPath(std::vector<std::vector<Pixel>> &matrix, std::vector<std::pair<int, int>> &minPath)
-{
-    for (int i = 0; i < minPath.size(); i++)
-        matrix[minPath[i].first].erase(matrix[minPath[i].first].begin() + minPath[i].second);
-}
+// void removeMinPath(std::vector<std::vector<Pixel>> &matrix, std::vector<std::pair<int, int>> &minPath)
+// {
+//     for (int i = 0; i < minPath.size(); i++)
+//         matrix[minPath[i].first].erase(matrix[minPath[i].first].begin() + minPath[i].second);
+// }
 
 // Main function to consolidate seam-removal functions
 void removeSeams(std::vector<std::vector<int>> &matrix, int seams)
@@ -284,18 +300,18 @@ void removeSeams(std::vector<std::vector<int>> &matrix, int seams)
         removeMinPath(matrix, minPath);
     }
 }
-void removeSeams(std::vector<std::vector<Pixel>> &matrix, int seams)
-{
-    std::vector<std::vector<int>> energyMatrix, cumulativeMatrix;
-    std::vector<std::pair<int, int>> minPath;
+// void removeSeams(std::vector<std::vector<Pixel>> &matrix, int seams)
+// {
+//     std::vector<std::vector<int>> energyMatrix, cumulativeMatrix;
+//     std::vector<std::pair<int, int>> minPath;
 
-    // remove "seams" amount of seams
-    for (int count = 0; count < seams; count++)
-    {
-        energyMatrix = calculateEnergyMatrix(matrix);
-        cumulativeMatrix = calculateCumulativeMatrix(energyMatrix);
-        minPath = findMinPath(cumulativeMatrix);
-        removeMinPath(matrix, minPath);
-    }
-}
+//     // remove "seams" amount of seams
+//     for (int count = 0; count < seams; count++)
+//     {
+//         energyMatrix = calculateEnergyMatrix(matrix);
+//         cumulativeMatrix = calculateCumulativeMatrix(energyMatrix);
+//         minPath = findMinPath(cumulativeMatrix);
+//         removeMinPath(matrix, minPath);
+//     }
+// }
 

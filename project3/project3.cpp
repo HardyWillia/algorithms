@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     {
         int width = 0, height = 0, maxVal = 0;
         std::vector<std::vector<int>> pgm;
-        std::vector<std::vector<Pixel>> ppm;
+        // std::vector<std::vector<Pixel>> ppm;
         std::string p_value;
 
         // Store arguments in variables
@@ -86,31 +86,31 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else
-            {
-                populateVector(ppm, width, height);
-                for (int i = 0; i < height; i++)
-                {
-                    for (int j = 0; j < width; j++)
-                    {
-                        Pixel thisPixel;
+            // else
+            // {
+            //     populateVector(ppm, width, height);
+            //     for (int i = 0; i < height; i++)
+            //     {
+            //         for (int j = 0; j < width; j++)
+            //         {
+            //             Pixel thisPixel;
 
-                        file >> chunk;
-                        std::stringstream myR(chunk);
-                        myR >> thisPixel.R;
+            //             file >> chunk;
+            //             std::stringstream myR(chunk);
+            //             myR >> thisPixel.R;
 
-                        file >> chunk;
-                        std::stringstream myG(chunk);
-                        myG >> thisPixel.G;
+            //             file >> chunk;
+            //             std::stringstream myG(chunk);
+            //             myG >> thisPixel.G;
 
-                        file >> chunk;
-                        std::stringstream myB(chunk);
-                        myB >> thisPixel.B;
+            //             file >> chunk;
+            //             std::stringstream myB(chunk);
+            //             myB >> thisPixel.B;
 
-                        ppm[i][j] = thisPixel;
-                    }
-                }
-            }
+            //             ppm[i][j] = thisPixel;
+            //         }
+            //     }
+            // }
         }
         else
         {
@@ -157,30 +157,30 @@ int main(int argc, char *argv[])
                 outfile.close();
             }
         }
-        else
-            {
-                removeSeams(ppm, vertical);
-                ppm = transpose(ppm);
-                removeSeams(ppm, horizontal);
-                ppm = transpose(ppm);
+        // else
+        //     {
+        //         removeSeams(ppm, vertical);
+        //         ppm = transpose(ppm);
+        //         removeSeams(ppm, horizontal);
+        //         ppm = transpose(ppm);
 
-                std::ofstream outfile;
-                outfile.open(outputFilename.c_str(), std::ofstream::out | std::ofstream::trunc);
+        //         std::ofstream outfile;
+        //         outfile.open(outputFilename.c_str(), std::ofstream::out | std::ofstream::trunc);
 
-                outfile << p_value << "\n";
-                outfile << "# Output after removing " << vertical << " vertical and " << horizontal << " seams from " << imageFilename << "\n";
-                outfile << ppm[0].size() << " " << ppm.size() << "\n";
-                outfile << maxVal << "\n";
-                for (int i = 0; i < ppm.size(); i++)
-                {
-                    for (int j = 0; j < ppm[0].size(); j++)
-                    {
-                        outfile << ppm[i][j].R << " " << ppm[i][j].G << " " << ppm[i][j].B << " ";
-                    }
-                    outfile << "\n";
-                }
-                outfile.close();
-            }
+        //         outfile << p_value << "\n";
+        //         outfile << "# Output after removing " << vertical << " vertical and " << horizontal << " seams from " << imageFilename << "\n";
+        //         outfile << ppm[0].size() << " " << ppm.size() << "\n";
+        //         outfile << maxVal << "\n";
+        //         for (int i = 0; i < ppm.size(); i++)
+        //         {
+        //             for (int j = 0; j < ppm[0].size(); j++)
+        //             {
+        //                 outfile << ppm[i][j].R << " " << ppm[i][j].G << " " << ppm[i][j].B << " ";
+        //             }
+        //             outfile << "\n";
+        //         }
+        //         outfile.close();
+        //     }
             std::cout << "Output file exported to " << outputFilename << std::endl;
         }
     }
