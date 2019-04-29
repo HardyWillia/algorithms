@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
                     outfile << "\n";
                 }
                 outfile.close();
+            }
         }
         else
             {
