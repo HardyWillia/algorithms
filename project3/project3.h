@@ -130,7 +130,45 @@ std::pair<int, int> minCoords(std::vector<std::vector<int>> &cumulative, int i)
     return min;
 }
 
+// Calculate the energy matrix
+std::vector<std::vector<int>> calculateEnergyMatrix(std::vector<std::vector<int>> &matrix)
+{
+    int height = matrix.size();
+    int width = matrix[0].size();
+    std::vector<std::vector<int>> energyMatrix;
+    populateVector(energyMatrix, width, height);
+    int left, right, top, bottom;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            if (j == 0)
+                left = 0;
+            else
+                left = abs(matrix[i][j] - matrix[i][j - 1]);
+            ;
 
+            if (j == width - 1)
+                right = 0;
+            else
+                right = abs(matrix[i][j] - matrix[i][j + 1]);
+
+            if (i == 0)
+                top = 0;
+            else
+                top = abs(matrix[i][j] - matrix[i - 1][j]);
+
+            if (i == height - 1)
+                bottom = 0;
+            else
+                bottom = abs(matrix[i][j] - matrix[i + 1][j]);
+
+            energyMatrix[i][j] = left + right + top + bottom;
+        }
+    }
+
+    return energyMatrix;
+}
 
 // Calculate the energy matrix for Pixel matrix
 std::vector<std::vector<int>> calculateEnergyMatrix(std::vector<std::vector<Pixel>> &matrix)
@@ -219,13 +257,33 @@ std::vector<std::pair<int, int>> findMinPath(std::vector<std::vector<int>> &cumu
 }
 
 
-// Overload for Pixel matrices
+// Overload for matrices
+void removeMinPath(std::vector<std::vector<int>> &matrix, std::vector<std::pair<int, int>> &minPath)
+{
+    for (int i = 0; i < minPath.size(); i++)
+        matrix[minPath[i].first].erase(matrix[minPath[i].first].begin() + minPath[i].second);
+}
 void removeMinPath(std::vector<std::vector<Pixel>> &matrix, std::vector<std::pair<int, int>> &minPath)
 {
     for (int i = 0; i < minPath.size(); i++)
         matrix[minPath[i].first].erase(matrix[minPath[i].first].begin() + minPath[i].second);
 }
 
+// Main function to consolidate seam-removal functions
+void removeSeams(std::vector<std::vector<int>> &matrix, int seams)
+{
+    std::vector<std::vector<int>> energyMatrix, cumulativeMatrix;
+    std::vector<std::pair<int, int>> minPath;
+
+    // remove "seams" amount of seams
+    for (int count = 0; count < seams; count++)
+    {
+        energyMatrix = calculateEnergyMatrix(matrix);
+        cumulativeMatrix = calculateCumulativeMatrix(energyMatrix);
+        minPath = findMinPath(cumulativeMatrix);
+        removeMinPath(matrix, minPath);
+    }
+}
 void removeSeams(std::vector<std::vector<Pixel>> &matrix, int seams)
 {
     std::vector<std::vector<int>> energyMatrix, cumulativeMatrix;
@@ -240,3 +298,4 @@ void removeSeams(std::vector<std::vector<Pixel>> &matrix, int seams)
         removeMinPath(matrix, minPath);
     }
 }
+

@@ -120,7 +120,41 @@ int main(int argc, char *argv[])
         if (maxVal != 0)
         {
             file.close();
+            if (p_value == "P2")
+            {
 
+                // set pgm to the output of removing all the vertical seams
+                removeSeams(pgm, vertical);
+
+                // transpose the matrix so we can use the same function to remove horizontal seams
+                pgm = transpose(pgm);
+
+                // set pgm to the output of removing all the horizontal seams
+                removeSeams(pgm, horizontal);
+
+                // transpose back to get the original orientation
+                pgm = transpose(pgm);
+
+                // pgm is now the trimmed image, output to file with new dimensions
+                std::ofstream outfile;
+                outfile.open(outputFilename.c_str(), std::ofstream::out | std::ofstream::trunc);
+
+                // export 4 initial entries
+                outfile << p_value << "\n";
+                outfile << "# Output after removing " << vertical << " vertical and " << horizontal << " seams from " << imageFilename << "\n";
+                outfile << pgm[0].size() << " " << pgm.size() << "\n";
+                outfile << maxVal << "\n";
+
+                // export the matrix
+                for (int i = 0; i < pgm.size(); i++)
+                {
+                    for (int j = 0; j < pgm[0].size(); j++)
+                    {
+                        outfile << pgm[i][j] << " ";
+                    }
+                    outfile << "\n";
+                }
+                outfile.close();
         }
         else
             {
