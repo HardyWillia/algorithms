@@ -15,3 +15,7 @@ EX- 	input: "imageName.pgm"
 
 The bonus was not completed. So the program will only remove the horizontal and vertical seams and make the image smaller. Which are the initial project requirements.
 
+Testcases for the program were put in a separate folder for organization sake.
+
+Also, I did not account for if the image has color (extra credit), it will only work for greyscale images. 
+

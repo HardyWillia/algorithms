@@ -40,7 +40,6 @@ std::vector<std::vector<int>> transpose(std::vector<std::vector<int>> &matrix)
 }
 
 // Print the matrix out for quick debugging
-// Careful when using with large inputs
 void printMatrix(std::vector<std::vector<int>> &matrix, std::string name)
 {
     int height = matrix.size();
@@ -186,7 +185,7 @@ std::vector<std::pair<int, int>> findMinPath(std::vector<std::vector<int>> &cumu
 }
 
 
-// Overload for matrices
+// Remove the path
 void removeMinPath(std::vector<std::vector<int>> &matrix, std::vector<std::pair<int, int>> &minPath)
 {
     for (int i = 0; i < minPath.size(); i++)
